@@ -1,7 +1,9 @@
+package tranqpill;
+
+
 public class Board {
 	
 	private Square[][] board;
-	private Piece current;
 	
 	public Board() {
 		board = new Square[8][8];

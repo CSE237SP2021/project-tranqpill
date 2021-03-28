@@ -1,3 +1,5 @@
+package tranqpill;
+
 public class Piece {
 	private char type;
 	

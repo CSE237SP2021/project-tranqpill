@@ -1,3 +1,5 @@
+package tranqpill;
+
 public class Square {
 	
 	private boolean isWhite;
