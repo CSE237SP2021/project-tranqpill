@@ -2,6 +2,18 @@
 
 #### Authors: Zachary Isaacson, Christina Pan, Akshay Padmanabhan, and Nick Bartochowski
 
+### Iteration 1
+
+##### What user stories were completed during this iteration?
+
+##### User stories we intend to complete during the next itertion
+
+##### Features we have implemented that don't work
+
+##### How to compile and run the program
+
+------------------------------------
+
 ## Checkers Game
 
 For our CSE237 final project, we are implementing the game of Checkers (https://en.wikipedia.org/wiki/English_draughts). The game is played via the terminal (mac/linux) or command prompt (windows), and it can be played on any system that can run Java. We are implementing a fully functional checkers game for two players on an 8-by-8 playing board according to the standard rules of checkers. This project was created on the Eclipse IDE.
