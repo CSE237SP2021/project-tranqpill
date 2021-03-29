@@ -14,6 +14,15 @@ public class Piece {
 		}
 	}
 	
+	public Piece(Piece p) {
+		this.type = p.getType();
+		this.isBlack = p.isBlack();
+	}
+	
+	public char getType() {
+		return this.type;
+	}
+	
 	public boolean isBlack() {
 		return this.isBlack;
 	}

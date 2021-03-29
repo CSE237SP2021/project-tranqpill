@@ -68,14 +68,17 @@ public class Game {
 			System.out.println("White to play. Coordinates for move: ");
 		}
 		Scanner sc = new Scanner(System.in);
-		String s = sc.nextLine();
+		String s = "hi";
+		if (sc.hasNextLine()) {
+			s = sc.nextLine();
+			System.out.println("hello");
+		}
 		sc.close();
 		
-		if (Move.isValid(s, board, blackToPlay)) { // s is in proper format and legal
-			Move move = new Move(s, board);
-			return move;
-		}
-		return null;
+		
+		
+		Move move = Move.isValid(s, board, blackToPlay); // s is in proper format and legal
+		return move;
 	}
 
 	/**
@@ -83,11 +86,13 @@ public class Game {
 	 */
 	public void play() {
 		
+		board.print();
+		
 		boolean gameOver = false;
 		while (!gameOver) {
 			Move move = null;
 			// continue to prompt player for a valid move
-			while (move == null) {
+			if (move == null) {
 				move = prompt();
 			}
 			
@@ -110,7 +115,6 @@ public class Game {
 			}
 				
 			// game is not over, so it's the next player's turn
-			board.print();
 			blackToPlay = !blackToPlay;
 		}
 	}
@@ -121,7 +125,9 @@ public class Game {
 		
 		// if no capture, increment movesWithoutCapture
 		this.movesWithoutCapture = captures > 0 ? 0 : this.movesWithoutCapture+1;
-			
+
+		// move a piece from start square to end square
+		board.movePiece(move.getStartPoint(), move.getEndPoint());
 	}
 	
 }

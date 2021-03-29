@@ -13,6 +13,10 @@ public class Square {
 		return this.piece;
 	}
 	
+	public void setPiece(Piece p) {
+		this.piece = p;
+	}
+	
 	public void addPiece(Piece piece) {
 		this.piece = piece;
 	}

@@ -38,15 +38,26 @@ public class Board {
 	}
 	
 	public void print() {
-		this.toString();
+		System.out.println(this);
+	}
+	
+	/**
+	 * moves a piece from square at point a to square at point b
+	 * @param a starting square
+	 * @param b ending square
+	 */
+	public void movePiece(Point a, Point b) {
+		Piece p = new Piece(board[a.x][a.y].getPiece()); 
+		board[b.x][b.y].setPiece(p);
+		board[a.x][a.y].setPiece(null);
 	}
 	
 	/**
 	 * converts the coordinates of a square to fit bottom-left perspective
-	 * @param x x-coordinate from bottom-left perpsective
+	 * @param x x-coordinate from bottom-left perspective
 	 */
-	public static void convertCoordinate(Integer x) {
-		x = ROWS-x-1;
+	public static int convertCoordinate(Integer x) {
+		return ROWS-x-1;
 	}
 	
 	@Override
@@ -54,7 +65,7 @@ public class Board {
 		StringBuilder sb = new StringBuilder();
 		for (Square[]row: board) {
 			for (Square sq : row) {
-				sb.append(sq);
+				sb.append(sq.toString());
 			}
 			sb.append("\n");
 		}
