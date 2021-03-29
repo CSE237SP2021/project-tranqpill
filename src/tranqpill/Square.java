@@ -9,6 +9,10 @@ public class Square {
 		this.isWhite = isWhite;
 	}
 	
+	public Piece getPiece() {
+		return this.piece;
+	}
+	
 	public void addPiece(Piece piece) {
 		this.piece = piece;
 	}
