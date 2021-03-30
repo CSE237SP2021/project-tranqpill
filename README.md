@@ -6,11 +6,18 @@
 
 ##### What user stories were completed during this iteration?
 
+We were able to write a script that will succesfully run our Checkers game. We were also able to initialize the starting position of the board. We currently prompt the user for coordinates that represent their move, and we are able to alternate white/black turns in the command line. Lastly, we are able to print the board after each move is made. 
+
 ##### User stories we intend to complete during the next itertion
+
+The biggest thing that we will complete in the next iteration is correctly making the user inputted moves on the actual board. Specifically, this will involve checking to make sure that the player inputs coordinates valid for a queen move, checking to make sure if a move results in a queen becoming a king, etc. Additionally, we will need to correctly handle moves in which a piece is captured. 
 
 ##### Features we have implemented that don't work
 
+Currently, we have implemented a feature that notifies the users that the game has ended, however since we can't accept moves and make them this feature doesn't really work. We also have implemented a scanner that is trying to read in user input; the scanner works but the move parser method doesn't work at the moment.
+
 ##### How to compile and run the program
+./runCheckers.sh
 
 ------------------------------------
 
