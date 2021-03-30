@@ -11,7 +11,6 @@ public class Game {
 	protected final int STARTING_NUMBER_OF_PIECES = 12;
 	
 	// instance variables
-	//private Color colorToPlay;
 	private int blackPieces;
 	private int whitePieces;
 	private boolean blackToPlay;
@@ -67,18 +66,19 @@ public class Game {
 		} else {
 			System.out.println("White to play. Coordinates for move: ");
 		}
+		
 		Scanner sc = new Scanner(System.in);
-		String s = "hi";
+		
+		String s;
 		if (sc.hasNextLine()) {
-			s = sc.nextLine();
-			System.out.println("hello");
+			s = sc.nextLine();	
 		}
-		sc.close();
 		
+		return null;
 		
-		
-		Move move = Move.isValid(s, board, blackToPlay); // s is in proper format and legal
-		return move;
+		// Move.isValid is not yet implemented
+		//Move move = Move.isValid(s, board, blackToPlay); // s is in proper format and legal
+		//return move;
 	}
 
 	/**
@@ -86,12 +86,11 @@ public class Game {
 	 */
 	public void play() {
 		
-		board.print();
-		
 		boolean gameOver = false;
 		while (!gameOver) {
+			board.print();
 			Move move = null;
-			// continue to prompt player for a valid move
+			// prompt player for a valid move
 			if (move == null) {
 				move = prompt();
 			}
@@ -119,15 +118,21 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * This method updates the current game position based off of the move provided 
+	 * by the player
+	 * @param move Move to be made by player
+	 */
 	public void updateBoard(Move move) {
-		
-		int captures = move.getCaptures();
-		
-		// if no capture, increment movesWithoutCapture
-		this.movesWithoutCapture = captures > 0 ? 0 : this.movesWithoutCapture+1;
+		if (move != null) {
+			int captures = move.getCaptures();
+			
+			// if no capture, increment movesWithoutCapture
+			this.movesWithoutCapture = captures > 0 ? 0 : this.movesWithoutCapture+1;
 
-		// move a piece from start square to end square
-		board.movePiece(move.getStartPoint(), move.getEndPoint());
+			// move a piece from start square to end square
+			board.movePiece(move.getStartPoint(), move.getEndPoint());	
+		}
 	}
 	
 }
