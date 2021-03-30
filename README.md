@@ -17,7 +17,9 @@ The biggest thing that we will complete in the next iteration is correctly makin
 Currently, we have implemented a feature that notifies the users that the game has ended, however since we can't accept moves and make them this feature doesn't really work. We also have implemented a scanner that is trying to read in user input; the scanner works but the move parser method doesn't work at the moment.
 
 ##### How to compile and run the program
+Navigate to the directory where the project is located and type 
 ./runCheckers.sh
+This runs a script, which will automatically compile and run the project.
 
 ------------------------------------
 
