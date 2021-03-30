@@ -4,6 +4,10 @@
 
 ### Iteration 1
 
+**
+Notes: Our J-UNIT tests compile and pass in eclipse, but are having some problems running on the command line. Also, right now we aren't able to take a user inputted move and change the board position, which is why nothing happens when a user inputs a move into the command prompt. 
+
+
 ##### What user stories were completed during this iteration?
 
 We were able to write a script that will succesfully run our Checkers game. We were also able to initialize the starting position of the board. We currently prompt the user for coordinates that represent their move, and we are able to alternate white/black turns in the command line. Lastly, we are able to print the board after each move is made. 
