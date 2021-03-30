@@ -33,9 +33,8 @@ For our CSE237 final project, we are implementing the game of Checkers (https://
 
 ### Rules
 Our implementation is based off of the standard rules of checkers. The entire game board is an 8x8 board of squares, but the playing area will only use 32 of these squares. The initial position is comprised of 12 white pieces on the bottom and 12 black pieces on the top of the board, as depicted below:<br><br>
-Diagram<br><br>
-During each turn, a player must select one of their own pieces to move. Each game piece (represented by "w" for white or "b" for black) is permitted to move to a diagonally adjacent, empty, forward square. A player captures the opponent's piece by jumping over it, as depicted in the following diagram:<br><br>
-Diagram<br><br>
+![image](https://user-images.githubusercontent.com/54568628/112922589-547de200-90d2-11eb-9b43-fcd619d48bde.png)<br><br>
+During each turn, a player must select one of their own pieces to move. Each game piece (represented by "w" for white or "b" for black) is permitted to move to a diagonally adjacent, empty, forward square. A player captures the opponent's piece by jumping over it.<br><br>
 When a player's piece reaches the last row on the board, it becomes crowned as a king and obtains the additional freedom of moving diagonally backwards. Kings are represented by "W" for white or "B" for black.<br><br>
 If a player captures all of the opponent's pieces, that player wins, and the game ends.
 Additionally, our implementation assumes the standard jumping and tying rules, where jumps are mandatory and threefold repetitions or 50 moves without a capture lead to an automatic tie. 
