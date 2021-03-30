@@ -8,6 +8,7 @@ public class Board {
 	
 	private Square[][] board;
 	
+	// initializes an 8-by-8 array of squares as the game board
 	public Board() {
 		board = new Square[ROWS][COLUMNS];
 		for(int i = 0; i < 64; ++i) {
@@ -15,6 +16,7 @@ public class Board {
 		}
 	}
 	
+	// sets up the initial game position
 	public void readyPlayers() {
 		for(int i = 0; i < 2; ++i) {
 			for(int j = 0; j < board[i].length; ++j) {

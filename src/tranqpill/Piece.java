@@ -1,8 +1,8 @@
 package tranqpill;
 
 public class Piece {
-	
-	private char type;
+	// w and b represent white and black queens, W and B represent white and black kings
+	private char type; 
 	private boolean isBlack;
 	
 	public Piece(char s) {

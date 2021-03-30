@@ -1,4 +1,4 @@
-/*package tranqpill;
+package tranqpill;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,4 +33,3 @@ class CheckersTests {
 	}
 
 }
-*/
