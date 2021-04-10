@@ -7,6 +7,29 @@ import org.junit.jupiter.api.Test;
 class CheckersTests {
 	
 	@Test
+	void testCoordinateMarkers() {
+		Board b = new Board();
+		assertEquals(b.toString()," * * * *\n" + 
+				"* * * * \n" + 
+				" * * * *\n" + 
+				"* * * * \n" + 
+				" * * * *\n" + 
+				"* * * * \n" + 
+				" * * * *\n" + 
+				"* * * * \n");
+		b.setCMarks(true);
+		assertEquals(b.toString(),"1  * * * *\n" + 
+				"2 * * * * \n" + 
+				"3  * * * *\n" + 
+				"4 * * * * \n" + 
+				"5  * * * *\n" + 
+				"6 * * * * \n" + 
+				"7  * * * *\n" + 
+				"8 * * * * \n" + 
+				"  abcdefgh\n");
+	}
+	
+	@Test
 	void testPieceProperties() {
 		WhiteSingle ws = new WhiteSingle();
 		assertEquals(ws.isBlack(),false);

@@ -5,11 +5,13 @@ public class Board {
 	
 	protected static final int ROWS = 8;
 	protected static final int COLUMNS = 8;
+	private boolean coordinateMarkers;
 	
 	private Square[][] board;
 	
 	// initializes an 8-by-8 array of squares as the game board
 	public Board() {
+		coordinateMarkers = false;
 		board = new Square[ROWS][COLUMNS];
 		for(int i = 0; i < 64; ++i) {
 			board[i/8][i%8]= new Square((i+i/8)%2==0);
@@ -62,15 +64,24 @@ public class Board {
 		return ROWS-x-1;
 	}
 	
+	public void setCMarks(boolean cMarks) {
+		this.coordinateMarkers=cMarks;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		int markerNum=1;
 		for (Square[]row: board) {
+			if (coordinateMarkers)
+				sb.append(markerNum++ + " ");
 			for (Square sq : row) {
 				sb.append(sq.toString());
 			}
 			sb.append("\n");
 		}
+		if (coordinateMarkers)
+			sb.append("  abcdefgh\n");
 		return sb.toString();
 	}
 }

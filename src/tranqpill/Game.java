@@ -69,9 +69,16 @@ public class Game {
 		
 		Scanner sc = new Scanner(System.in);
 		
-		String s;
+		String s="";
 		if (sc.hasNextLine()) {
 			s = sc.nextLine();	
+		}
+		
+		if(s.equals("off")) {
+			board.setCMarks(false);
+		}
+		if(s.equals("on")) {
+			board.setCMarks(true);
 		}
 		
 		return null;
