@@ -56,8 +56,8 @@ public class Game {
 	}
 	
 	/**
-	 * Retrieves the player's input string and checks if it is a valid move
-	 * @return the move associated with the input string if valid, otherwise null
+	 * Retrieves the player's input string and checks if it is a valid move and good form
+	 * @return the move if valid and good form, otherwise null
 	 */
 	public Move prompt() {
 		
@@ -69,15 +69,21 @@ public class Game {
 		
 		Scanner sc = new Scanner(System.in);
 		
-		String s="";
-		if (sc.hasNextLine()) {
-			s = sc.nextLine();	
+		String input = sc.nextLine();
+		if (correctForm(input)) {
+			System.out.println("good form!");
+		}
+		else {
+			System.out.println("bad form!");
 		}
 		
-		if(s.equals("off")) {
+		sc.close();
+		
+		
+		if(input.equals("off")) {
 			board.setCMarks(false);
 		}
-		if(s.equals("on")) {
+		if(input.equals("on")) {
 			board.setCMarks(true);
 		}
 		
@@ -88,6 +94,50 @@ public class Game {
 		//return move;
 	}
 
+	public boolean correctForm(String user_input) {
+		
+		Set<Character> good_letters = new HashSet<Character>();
+		good_letters.add('a');
+		good_letters.add('b');
+		good_letters.add('c');
+		good_letters.add('d');
+		good_letters.add('e');
+		good_letters.add('f');
+		good_letters.add('g');
+		good_letters.add('h');
+
+		for (int i = 0; i < user_input.length(); i = i+3) {
+			char c = user_input.charAt(i);
+			if (!good_letters.contains(c)) {
+				return false;	
+			}	
+		}
+		
+		for (int i = 1; i < user_input.length(); i = i+3) {
+			char c = user_input.charAt(i);
+			if (!Character.isDigit(c)) {
+				return false;	
+			}	
+		}
+		
+		Character dash = new Character('-');
+		for (int i = 2; i < user_input.length(); i = i+3) {
+			Character c = user_input.charAt(i);
+			if (!c.equals(dash)) {
+				return false;	
+			}	
+		}
+		
+		Character last = user_input.charAt(user_input.length()-1);
+		if (!Character.isDigit(last)) {
+			return false;
+		}
+		
+		return true;	
+	}
+	
+
+	
 	/**
 	 * Starts a new checkers game
 	 */
