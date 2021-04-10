@@ -21,7 +21,7 @@ public class Board {
 		for(int i = 0; i < 2; ++i) {
 			for(int j = 0; j < board[i].length; ++j) {
 				if(!board[i][j].getIsWhite()) {
-					board[i][j].addPiece(new Piece('w'));
+					board[i][j].addPiece(new WhiteSingle());
 				}
 			}
 		}
@@ -29,7 +29,7 @@ public class Board {
 		for(int i = 6; i < 8; ++i) {
 			for(int j = 0; j < board[i].length; ++j) {
 				if(!board[i][j].getIsWhite()) {
-					board[i][j].addPiece(new Piece('b'));
+					board[i][j].addPiece(new BlackSingle());
 				}
 			}
 		}
@@ -49,7 +49,7 @@ public class Board {
 	 * @param b ending square
 	 */
 	public void movePiece(Point a, Point b) {
-		Piece p = new Piece(board[a.x][a.y].getPiece()); 
+		Piece p = board[a.x][a.y].getPiece(); 
 		board[b.x][b.y].setPiece(p);
 		board[a.x][a.y].setPiece(null);
 	}
