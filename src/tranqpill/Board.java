@@ -14,8 +14,12 @@ public class Board {
 		coordinateMarkers = false;
 		board = new Square[ROWS][COLUMNS];
 		for(int i = 0; i < 64; ++i) {
-			board[i/8][i%8]= new Square((i+i/8)%2==0);
+			board[i/8][i%8]= new Square((i+i/8)%2==0, new Point(i/8,i%8));
 		}
+	}
+	public Board(Square[][]b) {
+		coordinateMarkers = false;
+		board=b;
 	}
 	
 	// sets up the initial game position
@@ -66,6 +70,14 @@ public class Board {
 	
 	public void setCMarks(boolean cMarks) {
 		this.coordinateMarkers=cMarks;
+	}
+	
+	public Square[][] getBoard() {
+		return board;
+	}
+	
+	public Board clone() {
+		return new Board(board.clone());
 	}
 	
 	@Override

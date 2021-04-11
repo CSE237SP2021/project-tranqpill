@@ -61,6 +61,9 @@ public class Game {
 	 */
 	public Move prompt() {
 		
+		
+		
+		
 		if (this.blackToPlay) {
 			System.out.println("Black to play. Coordinates for move: ");
 		} else {
@@ -70,28 +73,87 @@ public class Game {
 		Scanner sc = new Scanner(System.in);
 		
 		String input = sc.nextLine();
-		if (correctForm(input)) {
-			System.out.println("good form!");
-		}
-		else {
-			System.out.println("bad form!");
-		}
-		
-		sc.close();
-		
 		
 		if(input.equals("off")) {
 			board.setCMarks(false);
+			return null;
 		}
 		if(input.equals("on")) {
 			board.setCMarks(true);
+			return null;
 		}
 		
+		sc.close();
+		if (correctForm(input)) {
+			System.out.println("good form!");
+			Square[] positions = new Square[(input.length()+1)/3];
+			for (int i = 0; i < positions.length; i++) {
+				positions[i] = board.getBoard()[8-((int)(input.charAt(i*3+1))-48)][(int)(input.charAt(i*3+1))-97];
+			}
+			Move m = new Move(positions);
+			if (isLegal(m)) {
+				//return new Move(input);
+			}
+		}
+		else {
+			System.out.println("bad form!");
+			return null;
+		}
 		return null;
+		
 		
 		// Move.isValid is not yet implemented
 		//Move move = Move.isValid(s, board, blackToPlay); // s is in proper format and legal
 		//return move;
+	}
+	
+	private boolean isLegal(Move m) {
+		if (m.getLocations().length<2) {
+			return false;
+		}
+		// If either no piece is at the inital location or no player's piece
+		if(m.getLocations()[0].getPiece()==null||(m.getLocations()[0].getPiece().isBlack()!=this.blackToPlay)) {
+			return false;
+		}
+		Point prevPoint = m.getLocations()[0].getLocation();
+		Board updatedBoard = board.clone();
+		
+		for (int i =1; i < m.getLocations().length;i++) {
+			Point currPoint = m.getLocations()[i].getLocation();
+			if(Math.abs(prevPoint.x-currPoint.x)==1 && Math.abs(prevPoint.y-currPoint.y)==1) {
+				if(currPoint.x>prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
+					return false; 
+				}
+				if(! (updatedBoard.getBoard()[currPoint.x][currPoint.y].getPiece()==null)) {
+					return false;
+				}
+				
+				updatedBoard.getBoard()[currPoint.x][currPoint.y].setPiece(updatedBoard.getBoard()[prevPoint.x][prevPoint.y].getPiece());
+				updatedBoard.getBoard()[prevPoint.x][prevPoint.y].setPiece(null);
+				
+			}
+			
+			if(Math.abs(prevPoint.x-currPoint.x)==2 && Math.abs(prevPoint.y-currPoint.y)==2) {
+				if(currPoint.x>prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
+					return false; 
+				}
+				if(! (updatedBoard.getBoard()[currPoint.x][currPoint.y].getPiece()==null)) {
+					return false;
+				}
+				if(updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].getPiece()==null) {
+					return false;
+				}
+				if(updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].getPiece().isBlack()==this.blackToPlay) {
+					return false;
+				}
+				updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].setPiece(null);
+				updatedBoard.getBoard()[currPoint.x][currPoint.y].setPiece(updatedBoard.getBoard()[prevPoint.x][prevPoint.y].getPiece());
+				updatedBoard.getBoard()[prevPoint.x][prevPoint.y].setPiece(null);
+			}
+			prevPoint=currPoint;
+		}
+		board = updatedBoard;
+		return true;
 	}
 
 	public boolean correctForm(String user_input) {
@@ -182,13 +244,13 @@ public class Game {
 	 */
 	public void updateBoard(Move move) {
 		if (move != null) {
-			int captures = move.getCaptures();
+			//int captures = move.getCaptures();
 			
 			// if no capture, increment movesWithoutCapture
-			this.movesWithoutCapture = captures > 0 ? 0 : this.movesWithoutCapture+1;
+			//this.movesWithoutCapture = captures > 0 ? 0 : this.movesWithoutCapture+1;
 
 			// move a piece from start square to end square
-			board.movePiece(move.getStartPoint(), move.getEndPoint());	
+			//board.movePiece(move.getStartPoint(), move.getEndPoint());	
 		}
 	}
 	
