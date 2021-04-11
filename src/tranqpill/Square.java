@@ -29,6 +29,11 @@ public class Square {
 	public boolean getIsWhite() {
 		return this.isWhite;
 	}
+	public Square clone() {
+		Square result = new Square(isWhite, location);
+		result.setPiece(piece);
+		return result;
+	}
 	
 	@Override
 	public String toString() {

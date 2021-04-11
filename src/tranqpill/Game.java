@@ -83,16 +83,18 @@ public class Game {
 			return null;
 		}
 		
-		sc.close();
+		//sc.close();
 		if (correctForm(input)) {
-			System.out.println("good form!");
+			//System.out.println("good form!");
 			Square[] positions = new Square[(input.length()+1)/3];
 			for (int i = 0; i < positions.length; i++) {
-				positions[i] = board.getBoard()[8-((int)(input.charAt(i*3+1))-48)][(int)(input.charAt(i*3+1))-97];
+				//System.out.println("yeem "+input);
+				positions[i] = board.getBoard()[((int)(input.charAt(i*3+1))-49)][(int)(input.charAt(i*3))-97];
 			}
 			Move m = new Move(positions);
 			if (isLegal(m)) {
-				//return new Move(input);
+				System.out.println("here");
+				return m;
 			}
 		}
 		else {
@@ -109,22 +111,26 @@ public class Game {
 	
 	private boolean isLegal(Move m) {
 		if (m.getLocations().length<2) {
+			//System.out.println("f1");
 			return false;
 		}
 		// If either no piece is at the inital location or no player's piece
 		if(m.getLocations()[0].getPiece()==null||(m.getLocations()[0].getPiece().isBlack()!=this.blackToPlay)) {
+			//System.out.println("f2 "+(m.getLocations()[0].getLocation()));
 			return false;
 		}
 		Point prevPoint = m.getLocations()[0].getLocation();
 		Board updatedBoard = board.clone();
-		
+		int nJumps=0;
 		for (int i =1; i < m.getLocations().length;i++) {
 			Point currPoint = m.getLocations()[i].getLocation();
 			if(Math.abs(prevPoint.x-currPoint.x)==1 && Math.abs(prevPoint.y-currPoint.y)==1) {
-				if(currPoint.x>prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
+				if((this.blackToPlay?1:-1)*currPoint.x>(this.blackToPlay?1:-1)*prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
+					//System.out.println("f3");
 					return false; 
 				}
 				if(! (updatedBoard.getBoard()[currPoint.x][currPoint.y].getPiece()==null)) {
+					//System.out.println("f4");
 					return false;
 				}
 				
@@ -133,8 +139,9 @@ public class Game {
 				
 			}
 			
-			if(Math.abs(prevPoint.x-currPoint.x)==2 && Math.abs(prevPoint.y-currPoint.y)==2) {
-				if(currPoint.x>prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
+			
+			else if(Math.abs(prevPoint.x-currPoint.x)==2 && Math.abs(prevPoint.y-currPoint.y)==2) {
+				if((this.blackToPlay?1:-1)*currPoint.x>(this.blackToPlay?1:-1)*prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
 					return false; 
 				}
 				if(! (updatedBoard.getBoard()[currPoint.x][currPoint.y].getPiece()==null)) {
@@ -149,9 +156,17 @@ public class Game {
 				updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].setPiece(null);
 				updatedBoard.getBoard()[currPoint.x][currPoint.y].setPiece(updatedBoard.getBoard()[prevPoint.x][prevPoint.y].getPiece());
 				updatedBoard.getBoard()[prevPoint.x][prevPoint.y].setPiece(null);
+				nJumps++;
+			}
+			else {
+				return false;
 			}
 			prevPoint=currPoint;
 		}
+		if(m.getLocations().length>2&&nJumps<m.getLocations().length-1)
+			return false;
+		System.out.println("doing it");
+		updatedBoard.setCMarks(board.getCMarks());
 		board = updatedBoard;
 		return true;
 	}
@@ -207,11 +222,15 @@ public class Game {
 		
 		boolean gameOver = false;
 		while (!gameOver) {
-			board.print();
+			
 			Move move = null;
 			// prompt player for a valid move
-			if (move == null) {
+			while (move == null) {
+				board.print();
 				move = prompt();
+				if(move==null) {
+					System.out.println("Invalid move, please re-enter");
+				}
 			}
 			
 			// update board with move

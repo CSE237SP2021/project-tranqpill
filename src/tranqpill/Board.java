@@ -21,6 +21,9 @@ public class Board {
 		coordinateMarkers = false;
 		board=b;
 	}
+	public boolean getCMarks() {
+		return this.coordinateMarkers;
+	}
 	
 	// sets up the initial game position
 	public void readyPlayers() {
@@ -77,7 +80,11 @@ public class Board {
 	}
 	
 	public Board clone() {
-		return new Board(board.clone());
+		Square[][] result = new Square[board.length][board[0].length];
+		for(int i = 0; i< board.length; i++)
+			for(int j =0; j<board[i].length;j++)
+				result[i][j]=board[i][j].clone();
+		return new Board(result);
 	}
 	
 	@Override
