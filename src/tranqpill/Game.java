@@ -7,15 +7,16 @@ import java.util.*;
 public class Game {
 	
 	// constants
-	protected final int DRAW_MOVE_RULE = 50;
+	protected final int DRAW_MOVE_RULE = 40;
 	protected final int STARTING_NUMBER_OF_PIECES = 12;
 	
 	// instance variables
-	private int blackPieces;
-	private int whitePieces;
+	protected int blackPieces;
+	protected int whitePieces;
 	private boolean blackToPlay;
-	private int movesWithoutCapture;
+	protected int movesWithoutCapture;
 	private Board board;
+    private Map<Board, Integer> pastPositions;
 	
 	// constructor
 	public Game() {
@@ -25,6 +26,7 @@ public class Game {
 		this.board.readyPlayers();
 		this.blackPieces = STARTING_NUMBER_OF_PIECES;
 		this.whitePieces = STARTING_NUMBER_OF_PIECES;
+        this.pastPositions = new HashMap<Board, Integer>();
 	}
 	
 	/** 
@@ -33,6 +35,18 @@ public class Game {
 	 */
 	// TODO
 	public boolean threefoldRepetition() {
+
+        for (int b : pastPositions.values()) {
+        	if (b >= 3) {
+        		System.out.println("Claim a draw?");
+        		Scanner sc = new Scanner(System.in);
+        		String s = sc.nextLine();
+        		sc.close();
+        		if (s.equals("yes")) {
+        			return true;
+        		} 
+        	}
+        }
 		return false;
 	}
 
@@ -48,7 +62,7 @@ public class Game {
 		}
 		
 		if (this.movesWithoutCapture >= DRAW_MOVE_RULE) {
-			System.out.println("50 moves have occurred without any captures, so the game is a draw.");
+			System.out.println("40 moves have occurred without any captures, so the game is a draw.");
 			return true;
 		}
 		
@@ -95,8 +109,10 @@ public class Game {
 		
 		boolean gameOver = false;
 		while (!gameOver) {
+			
 			board.print();
 			Move move = null;
+			
 			// prompt player for a valid move
 			if (move == null) {
 				move = prompt();
@@ -104,6 +120,12 @@ public class Game {
 			
 			// update board with move
 			updateBoard(move);
+			
+			// if capture occurred, reset pastPositions
+			if (move.getCaptures() > 0) {
+				this.pastPositions.clear();
+			} 
+			this.pastPositions.put(this.board, pastPositions.getOrDefault(this.board, 0) + 1);			
 			
 			// check if the game is a draw or is over
 			if (isDraw()) {
@@ -113,11 +135,9 @@ public class Game {
 					System.out.println("White has no pieces remaining. Black wins!");
 					gameOver = true;
 				}
-			} else {
-				if (this.blackPieces <= 0) {
-					System.out.println("Black has no pieces remaining. White wins!");
-					gameOver = true;				
-				}
+			} else if (this.blackPieces <= 0) {
+				System.out.println("Black has no pieces remaining. White wins!");
+				gameOver = true;				
 			}
 				
 			// game is not over, so it's the next player's turn
