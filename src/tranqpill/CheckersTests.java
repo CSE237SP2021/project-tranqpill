@@ -137,9 +137,7 @@ class CheckersTests {
 		g.updateBoard(up2);
 		g.updateBoard(down1);
 		
-		// threefold repetition did not happen, so draw() will test 40 move rule
-		assertTrue(g.isDraw());
-		
+		assertTrue(g.isDraw());	
 	}
 	
 	@Test
@@ -156,7 +154,9 @@ class CheckersTests {
 		g.blackPieces = 1;
 		
 		b.getBoard()[2][4].setPiece(black);
+		b.getBoard()[2][4].setPiece(white);
 		
 		
+	
 	}
 }
