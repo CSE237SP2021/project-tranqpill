@@ -29,10 +29,21 @@ public class Square {
 	public boolean getIsWhite() {
 		return this.isWhite;
 	}
+	
 	public Square clone() {
 		Square result = new Square(isWhite, location);
 		result.setPiece(piece);
 		return result;
+	}
+	
+	public boolean equals (Square s) {
+		if (s == null || this == null) return s == this;
+		Piece p = s.getPiece();
+		if (p == null || this.getPiece() == null) return p == this.getPiece() && s.getLocation() == this.getLocation();
+		if (s.getLocation().equals(this.getLocation()) && p.isBlack() == this.getPiece().isBlack() && p.isDouble() == this.getPiece().isDouble()) {
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

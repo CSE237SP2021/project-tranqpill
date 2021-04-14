@@ -13,7 +13,7 @@ public class Game {
 	// instance variables
 	protected int blackPieces;
 	protected int whitePieces;
-	private boolean blackToPlay;
+	protected boolean blackToPlay;
 	protected int movesWithoutCapture;
 	private Board board;
     private Map<Board, Integer> pastPositions;
@@ -35,18 +35,45 @@ public class Game {
 	 */
 	// TODO
 	public boolean threefoldRepetition() {
+		
+		if (pastPositions.isEmpty()) {
+			System.out.println("hi");
+		}
 
-        for (int b : pastPositions.values()) {
-        	if (b >= 3) {
+        for (int frequency : pastPositions.values()) {
+        	System.out.println(frequency);
+        	if (frequency >= 3) {
         		System.out.println("Claim a draw?");
         		Scanner sc = new Scanner(System.in);
         		String s = sc.nextLine();
         		sc.close();
         		if (s.equals("yes")) {
+        			if (this.blackToPlay) {
+        				System.out.println("The black player claimed a draw. The game is a tie!");
+        			} else {
+        				System.out.println("The white player claimed a draw. The game is a tie!");
+        			}
         			return true;
         		} 
         	}
         }
+		return false;
+	}
+	
+	/**
+	 * Checks to see if either player has won the game and prints a message accordingly
+	 * @return true if a player has won, false otherwise
+	 */
+	public boolean win() {
+		if (this.blackToPlay) {
+			if (this.whitePieces <= 0) {
+				System.out.println("White has no pieces remaining. Black wins!");
+				return true;
+			}
+		} else if (this.blackPieces <= 0) {
+			System.out.println("Black has no pieces remaining. White wins!");
+			return true;				
+		}
 		return false;
 	}
 
@@ -55,6 +82,8 @@ public class Game {
 	 * @return true if the game is a tie, false otherwise
 	 */
 	public boolean isDraw() {
+		
+		System.out.println(this.movesWithoutCapture);
 		
 		if (threefoldRepetition()) {
 			System.out.println("The same position has occurred 3 times, so the game is a tie.");
@@ -73,10 +102,7 @@ public class Game {
 	 * Retrieves the player's input string and checks if it is a valid move and good form
 	 * @return the move if valid and good form, otherwise null
 	 */
-	public Move prompt() {
-		
-		
-		
+	public Move prompt() {		
 		
 		if (this.blackToPlay) {
 			System.out.println("Black to play. Coordinates for move: ");
@@ -92,22 +118,19 @@ public class Game {
 			board.setCMarks(false);
 			return null;
 		}
+		
 		if(input.equals("on")) {
 			board.setCMarks(true);
 			return null;
 		}
 		
-		//sc.close();
 		if (correctForm(input)) {
-			//System.out.println("good form!");
 			Square[] positions = new Square[(input.length()+1)/3];
 			for (int i = 0; i < positions.length; i++) {
-				//System.out.println("yeem "+input);
 				positions[i] = board.getBoard()[((int)(input.charAt(i*3+1))-49)][(int)(input.charAt(i*3))-97];
 			}
 			Move m = new Move(positions);
 			if (isLegal(m)) {
-				System.out.println("here");
 				return m;
 			}
 		}
@@ -116,70 +139,87 @@ public class Game {
 			return null;
 		}
 		return null;
-		
-		
-		// Move.isValid is not yet implemented
-		//Move move = Move.isValid(s, board, blackToPlay); // s is in proper format and legal
-		//return move;
+	
 	}
 	
-	private boolean isLegal(Move m) {
-		if (m.getLocations().length<2) {
-			//System.out.println("f1");
+	/**
+	 * 
+	 * @param m move to be made
+	 * @return true if the move is legal, false otherwise
+	 */
+	protected boolean isLegal(Move m) {
+		
+		if (m.getLocations().length < 2) {
 			return false;
 		}
-		// If either no piece is at the inital location or no player's piece
+		
+		// If either no piece is at the initial location, or if the piece is not the player's piece
 		if(m.getLocations()[0].getPiece()==null||(m.getLocations()[0].getPiece().isBlack()!=this.blackToPlay)) {
-			//System.out.println("f2 "+(m.getLocations()[0].getLocation()));
 			return false;
 		}
+		
 		Point prevPoint = m.getLocations()[0].getLocation();
 		Board updatedBoard = board.clone();
 		int nJumps=0;
-		for (int i =1; i < m.getLocations().length;i++) {
+		
+		for (int i = 1; i < m.getLocations().length; i++) {
 			Point currPoint = m.getLocations()[i].getLocation();
-			if(Math.abs(prevPoint.x-currPoint.x)==1 && Math.abs(prevPoint.y-currPoint.y)==1) {
-				if((this.blackToPlay?1:-1)*currPoint.x>(this.blackToPlay?1:-1)*prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
-					//System.out.println("f3");
+			if (Math.abs(prevPoint.x-currPoint.x)==1 && Math.abs(prevPoint.y-currPoint.y)==1) {
+				
+				if ((this.blackToPlay?1:-1)*currPoint.x>(this.blackToPlay?1:-1)*prevPoint.x && !m.getLocations()[0].getPiece().isDouble()) {
 					return false; 
 				}
-				if(! (updatedBoard.getBoard()[currPoint.x][currPoint.y].getPiece()==null)) {
-					//System.out.println("f4");
+				
+				if (!(updatedBoard.getBoard()[currPoint.x][currPoint.y].getPiece()==null)) {
 					return false;
 				}
 				
 				updatedBoard.getBoard()[currPoint.x][currPoint.y].setPiece(updatedBoard.getBoard()[prevPoint.x][prevPoint.y].getPiece());
 				updatedBoard.getBoard()[prevPoint.x][prevPoint.y].setPiece(null);
-				
 			}
 			
-			
 			else if(Math.abs(prevPoint.x-currPoint.x)==2 && Math.abs(prevPoint.y-currPoint.y)==2) {
-				if((this.blackToPlay?1:-1)*currPoint.x>(this.blackToPlay?1:-1)*prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
+				
+				if ((this.blackToPlay?1:-1)*currPoint.x>(this.blackToPlay?1:-1)*prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
 					return false; 
 				}
+				
 				if(! (updatedBoard.getBoard()[currPoint.x][currPoint.y].getPiece()==null)) {
 					return false;
 				}
+				
 				if(updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].getPiece()==null) {
 					return false;
 				}
+				
 				if(updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].getPiece().isBlack()==this.blackToPlay) {
 					return false;
 				}
+				
 				updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].setPiece(null);
 				updatedBoard.getBoard()[currPoint.x][currPoint.y].setPiece(updatedBoard.getBoard()[prevPoint.x][prevPoint.y].getPiece());
 				updatedBoard.getBoard()[prevPoint.x][prevPoint.y].setPiece(null);
 				nJumps++;
-			}
+			} 
+			
 			else {
 				return false;
 			}
+			
 			prevPoint=currPoint;
 		}
+		
 		if(m.getLocations().length>2&&nJumps<m.getLocations().length-1)
 			return false;
-		System.out.println("doing it");
+		
+		// if capture occurred, reset pastPositions
+		if (nJumps > 0) {
+			this.pastPositions.clear();
+			++movesWithoutCapture;
+		}  
+		this.pastPositions.put(this.board, pastPositions.getOrDefault(this.board, 0) + 1);	
+		
+		
 		updatedBoard.setCMarks(board.getCMarks());
 		board = updatedBoard;
 		return true;
@@ -247,50 +287,19 @@ public class Game {
 				if(move==null) {
 					System.out.println("Invalid move, please re-enter");
 				}
-			}
-			
-			// update board with move
-			updateBoard(move);
-			
-			// if capture occurred, reset pastPositions
-			if (move.getCaptures() > 0) {
-				this.pastPositions.clear();
-			} 
-			this.pastPositions.put(this.board, pastPositions.getOrDefault(this.board, 0) + 1);			
+			}		
 			
 			// check if the game is a draw or is over
-			if (isDraw()) {
+			if (isDraw() || win()) {
 				gameOver = true;
-			} else if (this.blackToPlay) {
-				if (this.whitePieces <= 0) {
-					System.out.println("White has no pieces remaining. Black wins!");
-					gameOver = true;
-				}
-			} else if (this.blackPieces <= 0) {
-				System.out.println("Black has no pieces remaining. White wins!");
-				gameOver = true;				
-			}
-				
-			// game is not over, so it's the next player's turn
+			} 
+			
+			// switch the next player to make a move
 			blackToPlay = !blackToPlay;
 		}
 	}
 	
-	/**
-	 * This method updates the current game position based off of the move provided 
-	 * by the player
-	 * @param move Move to be made by player
-	 */
-	public void updateBoard(Move move) {
-		if (move != null) {
-			//int captures = move.getCaptures();
-			
-			// if no capture, increment movesWithoutCapture
-			//this.movesWithoutCapture = captures > 0 ? 0 : this.movesWithoutCapture+1;
-
-			// move a piece from start square to end square
-			//board.movePiece(move.getStartPoint(), move.getEndPoint());	
-		}
+	public Board getBoard() {
+		return this.board;
 	}
-	
 }

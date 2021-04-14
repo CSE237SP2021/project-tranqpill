@@ -76,87 +76,185 @@ class CheckersTests {
 	
 	@Test
 	void testThreefoldRepetition() {
-		
-		Board b = new Board();
-		
+
 		Piece white = new WhiteDouble();
 		Piece black = new BlackDouble();
 		
 		Game g = new Game();
 		
-		b.getBoard()[2][4].setPiece(black);
-		b.getBoard()[4][4].setPiece(white);
+		g.getBoard().getBoard()[1][4].setPiece(black);
+		g.getBoard().getBoard()[3][4].setPiece(white);
 		
-		Move up1 = new Move(new Point(2, 4), new Point(1,5));
-		Move down1 = new Move(new Point(1,5), new Point(2,4));
+		Square[] moves1 = new Square[2];
+		Square[] moves2 = new Square[2];
 		
-		Move up2 = new Move(new Point(4,4), new Point(3,3));
-		Move down2 = new Move(new Point(3,3), new Point(4,4));
+		Square[] moves3 = new Square[2];
+		Square[] moves4 = new Square[2];
 		
-		// first occurrence
-		g.updateBoard(up1);
-		g.updateBoard(up2);
-		g.updateBoard(down1);
-		g.updateBoard(down2);
+		Point black1 = new Point(1,4);
+		Point black2 = new Point(2,5);
+		Point white1 = new Point(3,4);
+		Point white2 = new Point(4,3);
 		
-		// second occurrence
-		g.updateBoard(up1);
-		g.updateBoard(up2);
-		g.updateBoard(down1);
-		g.updateBoard(down2);
+		Square s1 = new Square(false, black1);
+		Square s2 = new Square(false, black2);
+		Square s3 = new Square(false, white1);
+		Square s4 = new Square(false, white2);
 		
-		// third occurrence
-		g.updateBoard(up1);
-		g.updateBoard(up2);
-		g.updateBoard(down1);
-		g.updateBoard(down2);
+		moves1[0] = s1;
+		moves1[1] = s2;
+		moves2[0] = s2;
+		moves2[1] = s1;
+		
+		moves3[0] = s3;
+		moves3[1] = s4;
+		moves4[0] = s4;
+		moves4[1] = s3;
+		
+		Move move1 = new Move(moves1);
+		Move move2 = new Move(moves2);
+		Move move3 = new Move(moves3);
+		Move move4 = new Move(moves4);
+				
+		g.isLegal(move1);
+		g.blackToPlay = !g.blackToPlay;
+		g.isLegal(move3);
+		g.blackToPlay = !g.blackToPlay;
+		g.isLegal(move2);
+		g.blackToPlay = !g.blackToPlay;
+		g.isLegal(move4);
+		g.blackToPlay = !g.blackToPlay;
+		
+		g.isLegal(move1);
+		g.blackToPlay = !g.blackToPlay;
+		g.isLegal(move3);
+		g.blackToPlay = !g.blackToPlay;
+		g.isLegal(move2);
+		g.blackToPlay = !g.blackToPlay;
+		g.isLegal(move4);
+		g.blackToPlay = !g.blackToPlay;
+		
+		g.isLegal(move1);
+		g.blackToPlay = !g.blackToPlay;
+		g.isLegal(move3);
+		g.blackToPlay = !g.blackToPlay;
+		g.isLegal(move2);
+		g.blackToPlay = !g.blackToPlay;
+		g.isLegal(move4);
+		g.blackToPlay = !g.blackToPlay;
 		
 		assertTrue(g.threefoldRepetition());
 	}
 	
 	@Test
 	void test40MoveRule() {
-
-		Board b = new Board();
 		
 		Piece white = new WhiteDouble();
 		Piece black = new BlackDouble();
 		
 		Game g = new Game();
-		g.movesWithoutCapture = 37;
 		
-		b.getBoard()[2][4].setPiece(black);
-		b.getBoard()[4][4].setPiece(white);
+		g.movesWithoutCapture = 38;
 		
-		Move up1 = new Move(new Point(2, 4), new Point(1,5));
-		Move down1 = new Move(new Point(1,5), new Point(2,4));
+		g.getBoard().getBoard()[1][4].setPiece(black);
+		g.getBoard().getBoard()[3][4].setPiece(white);
 		
-		Move up2 = new Move(new Point(4,4), new Point(3,3));
+		Square[] moves1 = new Square[2];
+		Square[] moves2 = new Square[2];
 		
-		g.updateBoard(up1);
-		g.updateBoard(up2);
-		g.updateBoard(down1);
+		Point black1 = new Point(1,4);
+		Point black2 = new Point(2,5);
+		Point white1 = new Point(3,4);
+		Point white2 = new Point(2,3);
+		
+		Square s1 = new Square(false, black1);
+		Square s2 = new Square(false, black2);
+		Square s3 = new Square(false, white1);
+		Square s4 = new Square(false, white2);
+		
+		moves1[0] = s1;
+		moves1[1] = s2;
+		moves2[0] = s3;
+		moves2[1] = s4;
+		
+		Move move1 = new Move(moves1);
+		Move move2 = new Move(moves2);
+		
+		g.isLegal(move1);
+		g.blackToPlay = !g.blackToPlay;
+		g.isLegal(move2);
 		
 		assertTrue(g.isDraw());	
+
 	}
 	
 	@Test
 	void testBlackWins() {
-	
-		Board b = new Board();
 		
 		Piece white = new WhiteDouble();
 		Piece black = new BlackDouble();
 		
 		Game g = new Game();
 		
-		g.whitePieces = 0;
-		g.blackPieces = 1;
+		g.getBoard().getBoard()[2][3].setPiece(black);
+		g.getBoard().getBoard()[3][4].setPiece(white);
 		
-		b.getBoard()[2][4].setPiece(black);
-		b.getBoard()[2][4].setPiece(white);
+		Square[] moves1 = new Square[2];
 		
+		Point black1 = new Point(2,3);
+		Point black2 = new Point(4,5);
 		
+		Square s1 = new Square(false, black1);
+		Square s2 = new Square(false, black2);
+		
+		moves1[0] = s1;
+		moves1[1] = s2;
+		
+		Move move1 = new Move(moves1);
+		
+		g.isLegal(move1);
+		
+		assertTrue(g.win());
+		
+	}
+	
+	@Test
+	void testWhiteWins() {
+		
+		Piece white = new WhiteDouble();
+		Piece black = new BlackDouble();
+		
+		Game g = new Game();
+		
+		g.getBoard().getBoard()[1][4].setPiece(black);
+		g.getBoard().getBoard()[3][4].setPiece(white);
+		
+		Square[] moves1 = new Square[2];
+		Square[] moves2 = new Square[2];
+		
+		Point black1 = new Point(1,4);
+		Point black2 = new Point(2,3);
+		Point white1 = new Point(3,4);
+		Point white2 = new Point(1,2);
+		
+		Square s1 = new Square(false, black1);
+		Square s2 = new Square(false, black2);
+		Square s3 = new Square(false, white1);
+		Square s4 = new Square(false, white2);
+		
+		moves1[0] = s1;
+		moves1[1] = s2;
+		moves2[0] = s3;
+		moves2[1] = s4;
+		
+		Move move1 = new Move(moves1);
+		Move move2 = new Move(moves2);
+		
+		g.isLegal(move1);
+		g.blackToPlay = !g.blackToPlay;
+		g.isLegal(move2);
+		
+		assertTrue(g.win());
 	
 	}
 }

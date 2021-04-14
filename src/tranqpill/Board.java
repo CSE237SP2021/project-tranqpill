@@ -79,23 +79,28 @@ public class Board {
 		this.coordinateMarkers=cMarks;
 	}
 	
-	public Square[][] getBoard() {
-		return board;
-	}
-	
 	public Board clone() {
 		Square[][] result = new Square[board.length][board[0].length];
-		for(int i = 0; i< board.length; i++)
-			for(int j =0; j<board[i].length;j++)
-				result[i][j]=board[i][j].clone();
+		for(int i = 0; i < board.length; i++)
+			for(int j =0; j <board[i].length; j++)
+				result[i][j] = board[i][j].clone();
 		return new Board(result);
+	}
+	
+	public boolean equals(Board b) {
+		for (int i = 0; i < ROWS; ++i) {
+			for (int j = 0; j < COLUMNS; ++j) {
+				if (!b.getBoard()[i][j].equals(this.getBoard()[i][j])) return false;
+			}
+		}
+		return true;
 	}
 	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		int markerNum=1;
-		for (Square[]row: board) {
+		int markerNum = 1;
+		for (Square[]row : board) {
 			if (coordinateMarkers)
 				sb.append(markerNum++ + " ");
 			for (Square sq : row) {
