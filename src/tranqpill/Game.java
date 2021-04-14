@@ -56,8 +56,8 @@ public class Game {
 	}
 	
 	/**
-	 * Retrieves the player's input string and checks if it is a valid move
-	 * @return the move associated with the input string if valid, otherwise null
+	 * Retrieves the player's input string and checks if it is a valid move and of good form
+	 * @return the move if valid and good form, otherwise null
 	 */
 	public Move prompt() {
 		
@@ -69,25 +69,163 @@ public class Game {
 		
 		Scanner sc = new Scanner(System.in);
 		
-		String s="";
-		if (sc.hasNextLine()) {
-			s = sc.nextLine();	
-		}
+		String input = sc.nextLine();
 		
-		if(s.equals("off")) {
+		sc.close();
+		
+		if(input.equals("off")) {
 			board.setCMarks(false);
+			return null;
 		}
-		if(s.equals("on")) {
+		if(input.equals("on")) {
 			board.setCMarks(true);
+			return null;
 		}
 		
+		if (correctForm(input)) {
+			// Fill positions array with the coordinates of each part of a move
+			Square[] positions = new Square[(input.length()+1)/3];
+			for (int i = 0; i < positions.length; i++) {
+				positions[i] = board.getBoard()[((int)(input.charAt(i*3+1))-49)][(int)(input.charAt(i*3))-97];
+			}
+			
+			Move m = new Move(positions);
+			if (isLegal(m)) {
+				return m;
+			}
+		}
+		else {
+			System.out.println("Invalid move form!");
+			return null;
+		}
 		return null;
 		
-		// Move.isValid is not yet implemented
-		//Move move = Move.isValid(s, board, blackToPlay); // s is in proper format and legal
-		//return move;
+	}
+	
+	/**
+	 * Checks to see if a move is legal given the current board position
+	 * If the move is legal, the board position is updated 
+	 * @param m the move that is being checked
+	 * @return true if the move is legal, false if not
+	 */
+	
+	public boolean isLegal(Move m) {
+		if (m.getLocations().length<2) {
+			return false;
+		}
+		// If either no piece is at the initial location or the piece doesn't belong to the player whose turn it is
+		if(m.getLocations()[0].getPiece()==null||(m.getLocations()[0].getPiece().isBlack()!=this.blackToPlay)) {
+			return false;
+		}
+		Point prevPoint = m.getLocations()[0].getLocation();
+		Board updatedBoard = board.clone();
+		int nJumps=0;
+	
+		for (int i =1; i < m.getLocations().length;i++) {
+			Point currPoint = m.getLocations()[i].getLocation();
+			// checking for legality of moving a piece one step diagonally 
+			if(Math.abs(prevPoint.x-currPoint.x)==1 && Math.abs(prevPoint.y-currPoint.y)==1) {
+				if((this.blackToPlay?1:-1)*currPoint.x>(this.blackToPlay?1:-1)*prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
+					return false; 
+				}
+				// if trying to land on a square where there is already another piece
+				if(! (updatedBoard.getBoard()[currPoint.x][currPoint.y].getPiece()==null)) {
+					return false;
+				}
+				
+				//move was made, update board position by removing/setting piece 
+				updatedBoard.getBoard()[currPoint.x][currPoint.y].setPiece(updatedBoard.getBoard()[prevPoint.x][prevPoint.y].getPiece());
+				updatedBoard.getBoard()[prevPoint.x][prevPoint.y].setPiece(null);
+				
+			}
+			
+			// checking for legality of a jump (e.g. tries to make a capture)
+			else if(Math.abs(prevPoint.x-currPoint.x)==2 && Math.abs(prevPoint.y-currPoint.y)==2) {
+				if((this.blackToPlay?1:-1)*currPoint.x>(this.blackToPlay?1:-1)*prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
+					return false; 
+				}
+				if(! (updatedBoard.getBoard()[currPoint.x][currPoint.y].getPiece()==null)) {
+					return false;
+				}
+				if(updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].getPiece()==null) {
+					return false;
+				}
+				if(updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].getPiece().isBlack()==this.blackToPlay) {
+					return false;
+				}
+				updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].setPiece(null);
+				updatedBoard.getBoard()[currPoint.x][currPoint.y].setPiece(updatedBoard.getBoard()[prevPoint.x][prevPoint.y].getPiece());
+				updatedBoard.getBoard()[prevPoint.x][prevPoint.y].setPiece(null);
+				nJumps++;
+			}
+			else {
+				return false;
+			}
+			prevPoint=currPoint;
+		}
+		
+		// don't allow a piece to move twice with less than two jumps 
+		if(m.getLocations().length>2 && nJumps<m.getLocations().length-1)
+			return false;
+		updatedBoard.setCMarks(board.getCMarks());
+		board = updatedBoard;
+		return true;
 	}
 
+	/**
+	 * checks if the form of the move is correct (i.e. a valid coordinate (e.g. a4) followed by a dash (-) then followed by another coordinate)
+	 * @param user_input the list of coordinates (dash separated) supplied by the user to represent their move
+	 * @return true if the input is of correct form, false if not
+	 */
+	
+	boolean correctForm(String user_input) {
+		
+		Set<Character> good_letters = new HashSet<Character>();
+		good_letters.add('a');
+		good_letters.add('b');
+		good_letters.add('c');
+		good_letters.add('d');
+		good_letters.add('e');
+		good_letters.add('f');
+		good_letters.add('g');
+		good_letters.add('h');
+
+		// check every third character for a lowercase letter 
+		for (int i = 0; i < user_input.length(); i = i+3) {
+			char c = user_input.charAt(i);
+			if (!good_letters.contains(c)) {
+				return false;	
+			}	
+		}
+		
+		// check every third character for a digit (not 0 or 9)
+		for (int i = 1; i < user_input.length(); i = i+3) {
+			char c = user_input.charAt(i);
+			if (!Character.isDigit(c) || (int) c == 57 || (int) c == 48) {
+				return false;	
+			}	
+		}
+		
+		// check every third character for a dash
+		Character dash = new Character('-');
+		for (int i = 2; i < user_input.length(); i = i+3) {
+			Character c = user_input.charAt(i);
+			if (!c.equals(dash)) {
+				return false;	
+			}	
+		}
+		
+		// make sure the move sequence ends with a square (and thus a digit)
+		Character last = user_input.charAt(user_input.length()-1);
+		if (!Character.isDigit(last) || (int) last == 57 || (int) last == 48) {
+			return false;
+		}
+		
+		return true;	
+	}
+	
+
+	
 	/**
 	 * Starts a new checkers game
 	 */
@@ -95,11 +233,15 @@ public class Game {
 		
 		boolean gameOver = false;
 		while (!gameOver) {
-			board.print();
+			
 			Move move = null;
 			// prompt player for a valid move
-			if (move == null) {
+			while (move == null) {
+				board.print();
 				move = prompt();
+				if(move==null) {
+					System.out.println("Invalid move, please re-enter");
+				}
 			}
 			
 			// update board with move
@@ -120,9 +262,17 @@ public class Game {
 				}
 			}
 				
-			// game is not over, so it's the next player's turn
+			// game is not over, so it's the other player's turn
 			blackToPlay = !blackToPlay;
 		}
+	}
+	
+	/**
+	 * getter method
+	 * @return board for current game
+	 */
+	public Board getBoard() {
+		return this.board;
 	}
 	
 	/**
@@ -132,13 +282,13 @@ public class Game {
 	 */
 	public void updateBoard(Move move) {
 		if (move != null) {
-			int captures = move.getCaptures();
+			//int captures = move.getCaptures();
 			
 			// if no capture, increment movesWithoutCapture
-			this.movesWithoutCapture = captures > 0 ? 0 : this.movesWithoutCapture+1;
+			//this.movesWithoutCapture = captures > 0 ? 0 : this.movesWithoutCapture+1;
 
 			// move a piece from start square to end square
-			board.movePiece(move.getStartPoint(), move.getEndPoint());	
+			//board.movePiece(move.getStartPoint(), move.getEndPoint());	
 		}
 	}
 	

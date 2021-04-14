@@ -4,9 +4,14 @@ public class Square {
 	
 	private boolean isWhite;
 	private Piece piece;
+	private Point location;
 	
-	public Square(boolean isWhite) {
+	public Square(boolean isWhite, Point location) {
 		this.isWhite = isWhite;
+		this.location=location;
+	}
+	public Point getLocation() {
+		return location;
 	}
 	
 	public Piece getPiece() {
@@ -23,6 +28,11 @@ public class Square {
 	
 	public boolean getIsWhite() {
 		return this.isWhite;
+	}
+	public Square clone() {
+		Square result = new Square(isWhite, location);
+		result.setPiece(piece);
+		return result;
 	}
 	
 	@Override
