@@ -145,14 +145,14 @@ class CheckersTests {
 		
 		// Lastly, make moves until we can test out a capture (jump)
 		
-		String input4 = "a2-b3";
-		for (int i = 0; i < coordinates.length; i++) {
-			coordinates[i] = b.getBoard()[((int)(input4.charAt(i*3+1))-49)][(int)(input4.charAt(i*3))-97];
-		}
-		
-		Move m4 = new Move(coordinates);
-		assertEquals(true, g.isLegal(m4)); // should return true, isLegal also makes the move
-		
+//		String input4 = "a2-b3";
+//		for (int i = 0; i < coordinates.length; i++) {
+//			coordinates[i] = b.getBoard()[((int)(input4.charAt(i*3+1))-49)][(int)(input4.charAt(i*3))-97];
+//		}
+//		
+//		Move m4 = new Move(coordinates);
+//		assertEquals(true, g.isLegal(m4)); // should return true, isLegal also makes the move
+//		
 //		String input5 = "a6-b5";
 //		for (int i = 0; i < coordinates.length; i++) {
 //			coordinates[i] = b.getBoard()[((int)(input5.charAt(i*3+1))-49)][(int)(input5.charAt(i*3))-97];
