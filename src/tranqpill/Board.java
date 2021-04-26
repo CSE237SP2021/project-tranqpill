@@ -86,14 +86,34 @@ public class Board {
 				result[i][j] = board[i][j].clone();
 		return new Board(result);
 	}
-	
-	public boolean equals(Board b) {
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Board))
+			return false;
+		Board b = (Board) o;
 		for (int i = 0; i < ROWS; ++i) {
 			for (int j = 0; j < COLUMNS; ++j) {
 				if (!b.getBoard()[i][j].equals(this.getBoard()[i][j])) return false;
 			}
 		}
 		return true;
+	}
+	@Override
+	public int hashCode() {
+		int result=0;
+		for(int i =0; i < this.board.length;i++) {
+			for(int j =0; j< this.board[i].length;j++) {
+				int stack =0;
+				if(board[i][j].getPiece()!= null && !board[i][j].getPiece().isDouble()) 
+					stack=1;
+				else if(board[i][j].getPiece()!= null && board[i][j].getPiece().isDouble()) 
+					stack=2;
+				
+				
+				result+=(8*i+j+1)*stack;
+			}
+		}
+		return result;
 	}
 	
 	@Override

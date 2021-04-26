@@ -24,6 +24,10 @@ public class Game {
 		this.movesWithoutCapture = 0;
 		this.board = new Board();
 		this.board.readyPlayers();
+//		Piece white = new WhiteDouble();
+//		Piece black = new BlackDouble();
+//		this.board.getBoard()[1][4].setPiece(black);
+//		this.board.getBoard()[3][4].setPiece(white);
 		this.blackPieces = STARTING_NUMBER_OF_PIECES;
 		this.whitePieces = STARTING_NUMBER_OF_PIECES;
         this.pastPositions = new HashMap<Board, Integer>();
@@ -36,15 +40,16 @@ public class Game {
 	// TODO
 	public boolean threefoldRepetition() {
 		
-		if (pastPositions.isEmpty()) {
-			System.out.println("hi");
+		if (pastPositions.size()==0) {
+			System.out.println("no positions recorded");
 		}
 
-        for (int frequency : pastPositions.values()) {
-        	System.out.println(frequency);
-        	if (frequency >= 3) {
-        		System.out.println("Claim a draw?");
-        		Scanner sc = new Scanner(System.in);
+        for (Board b : pastPositions.keySet()) {
+        	System.out.println("freq "+b+", "+pastPositions.get(b));
+        	if (pastPositions.get(b) >= 3) {
+        		return true;
+        	//	System.out.println("Claim a draw?");
+        		/*Scanner sc = new Scanner(System.in);
         		String s = sc.nextLine();
         		sc.close();
         		if (s.equals("yes")) {
@@ -54,7 +59,7 @@ public class Game {
         				System.out.println("The white player claimed a draw. The game is a tie!");
         			}
         			return true;
-        		} 
+        		} */
         	}
         }
 		return false;
@@ -65,16 +70,44 @@ public class Game {
 	 * @return true if a player has won, false otherwise
 	 */
 	public boolean win() {
-		if (this.blackToPlay) {
-			if (this.whitePieces <= 0) {
+		int numWhitePieces = 0;
+		int numBlackPieces = 0;
+		for (Square[] row : this.getBoard().getBoard())
+			for(Square sq :row) {
+				if (sq.getPiece()!=null)
+				{
+					
+					if(sq.getPiece().isBlack())
+						numBlackPieces++;
+					else
+						numWhitePieces++;
+				}
+			}
+		if(numWhitePieces==0) {
+			System.out.println("White wins!");
+			return true;
+		}
+		if(numBlackPieces==0) {
+			System.out.println("Black wins!");
+			return true;
+		}
+		System.out.println("num white pieces "+numWhitePieces);
+		System.out.println("num black pieces "+numBlackPieces);
+		return false;
+		
+		/*
+		System.out.println("white pieces: " + this.whitePieces);
+		System.out.println("black pieces: " + this.blackPieces);
+		if (this.whitePieces <= 0) {
 				System.out.println("White has no pieces remaining. Black wins!");
 				return true;
 			}
-		} else if (this.blackPieces <= 0) {
+		if (this.blackPieces <= 0) {
 			System.out.println("Black has no pieces remaining. White wins!");
 			return true;				
 		}
 		return false;
+		*/
 	}
 
 	/**
@@ -215,12 +248,27 @@ public class Game {
 		// if capture occurred, reset pastPositions
 		if (nJumps > 0) {
 			this.pastPositions.clear();
+			this.movesWithoutCapture = 0;
+		}  else {
 			++movesWithoutCapture;
-		}  
+		}
+		System.out.println("incrementing position");
 		this.pastPositions.put(this.board, pastPositions.getOrDefault(this.board, 0) + 1);	
-		
+		//System.out.println("Past positions size "+pastPositions.size());
 		
 		updatedBoard.setCMarks(board.getCMarks());
+		for(int i=0; i< updatedBoard.getBoard()[0].length;i++) {
+			Square s = updatedBoard.getBoard()[0][i];
+			if(s.getPiece()!=null && s.getPiece().isBlack()) {
+				s.setPiece(new BlackDouble());
+			}
+		}
+		for(int i=0; i< updatedBoard.getBoard()[7].length;i++) {
+			Square s = updatedBoard.getBoard()[7][i];
+			if(s.getPiece()!=null && !s.getPiece().isBlack()) {
+				s.setPiece(new WhiteDouble());
+			}
+		}
 		board = updatedBoard;
 		return true;
 	}
@@ -301,5 +349,8 @@ public class Game {
 	
 	public Board getBoard() {
 		return this.board;
+	}
+	public void setBoard(Board b) {
+		this.board=b;
 	}
 }

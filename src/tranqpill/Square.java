@@ -37,14 +37,14 @@ public class Square {
 	}
 	
 	public boolean equals (Square s) {
-		if (s == null || this == null) return s == this;
+		if (s==null) return false;
+		if (!s.getLocation().equals( this.getLocation())) return false;
 		Piece p = s.getPiece();
-		if (p == null || this.getPiece() == null) return p == this.getPiece() && s.getLocation() == this.getLocation();
-		if (s.getLocation().equals(this.getLocation()) && p.isBlack() == this.getPiece().isBlack() && p.isDouble() == this.getPiece().isDouble()) {
-			return true;
+		if (p == null || this.getPiece() == null) {
+			return p == this.getPiece();
 		}
-		return false;
-	}
+		return p.isBlack() == (this.getPiece().isBlack()) && (p.isDouble() == this.getPiece().isDouble());
+	}	
 	
 	@Override
 	public String toString() {
