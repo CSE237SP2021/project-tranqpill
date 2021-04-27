@@ -71,7 +71,7 @@ public class Game {
 		
 		String input = sc.nextLine();
 		
-		sc.close();
+		//sc.close();
 		
 		if(input.equals("off")) {
 			board.setCMarks(false);
@@ -110,6 +110,7 @@ public class Game {
 	 */
 	
 	public boolean isLegal(Move m) {
+		
 		if (m.getLocations().length<2) {
 			return false;
 		}
@@ -165,8 +166,9 @@ public class Game {
 		}
 		
 		// don't allow a piece to move twice with less than two jumps 
-		if(m.getLocations().length>2 && nJumps<m.getLocations().length-1)
+		if(m.getLocations().length>2 && nJumps<m.getLocations().length-1) {
 			return false;
+		}
 		updatedBoard.setCMarks(board.getCMarks());
 		board = updatedBoard;
 		return true;
@@ -178,7 +180,7 @@ public class Game {
 	 * @return true if the input is of correct form, false if not
 	 */
 	
-	boolean correctForm(String user_input) {
+	 public boolean correctForm(String user_input) {
 		
 		Set<Character> good_letters = new HashSet<Character>();
 		good_letters.add('a');
@@ -225,7 +227,6 @@ public class Game {
 	}
 	
 
-	
 	/**
 	 * Starts a new checkers game
 	 */
@@ -240,12 +241,9 @@ public class Game {
 				board.print();
 				move = prompt();
 				if(move==null) {
-					System.out.println("Invalid move, please re-enter");
+					System.out.println("Enter a valid move");
 				}
 			}
-			
-			// update board with move
-			updateBoard(move);
 			
 			// check if the game is a draw or is over
 			if (isDraw()) {
@@ -275,21 +273,8 @@ public class Game {
 		return this.board;
 	}
 	
-	/**
-	 * This method updates the current game position based off of the move provided 
-	 * by the player
-	 * @param move Move to be made by player
-	 */
-	public void updateBoard(Move move) {
-		if (move != null) {
-			//int captures = move.getCaptures();
-			
-			// if no capture, increment movesWithoutCapture
-			//this.movesWithoutCapture = captures > 0 ? 0 : this.movesWithoutCapture+1;
-
-			// move a piece from start square to end square
-			//board.movePiece(move.getStartPoint(), move.getEndPoint());	
-		}
+	public void setBlackToPlay(boolean b) {
+		this.blackToPlay=b;
 	}
 	
 }

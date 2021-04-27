@@ -14,5 +14,4 @@ public class WhiteSingle implements Piece{
 	public String toString() {
 		return "w";
 	}
-
 }

@@ -1,6 +1,5 @@
 package tranqpill;
 
-
 public class UltimateCheckers {
 	
 	public static void main(String[] args) {
