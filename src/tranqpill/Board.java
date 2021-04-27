@@ -44,9 +44,6 @@ public class Board {
 		}
 	}
 	
-	public Square[][] getBoard() {
-		return this.board;
-	}
 	
 	public Square getSquare(int x, int y) {
 		return this.board[x][y];

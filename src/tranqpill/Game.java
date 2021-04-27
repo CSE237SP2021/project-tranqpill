@@ -261,13 +261,8 @@ public class Game {
 				}
 			}
 			
-			// update board with move
-			updateBoard(move);
-			
+
 			// if capture occurred, reset pastPositions
-			if (move.getCaptures() > 0) {
-				this.pastPositions.clear();
-			} 
 			this.pastPositions.put(this.board, pastPositions.getOrDefault(this.board, 0) + 1);			
 			
 			// check if the game is a draw or is over
