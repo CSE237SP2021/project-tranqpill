@@ -2,23 +2,15 @@
 
 #### Authors: Zachary Isaacson, Christina Pan, Akshay Padmanabhan, and Nick Bartochowski
 
-### Iteration 1
-
-**
-Notes: Our J-UNIT tests compile and pass in eclipse, but are having some problems running on the command line. Also, right now we aren't able to take a user inputted move and change the board position, which is why nothing happens when a user inputs a move into the command prompt. 
-
+### Iteration 3
 
 ##### What user stories were completed during this iteration?
 
-We were able to write a script that will succesfully run our Checkers game. We were also able to initialize the starting position of the board. We currently prompt the user for coordinates that represent their move, and we are able to alternate white/black turns in the command line. Lastly, we are able to print the board after each move is made. 
-
-##### User stories we intend to complete during the next itertion
-
-The biggest thing that we will complete in the next iteration is correctly making the user inputted moves on the actual board. Specifically, this will involve checking to make sure that the player inputs coordinates valid for a queen move, checking to make sure if a move results in a queen becoming a king, etc. Additionally, we will need to correctly handle moves in which a piece is captured. 
+We were able to complete the fully functional game for this iteration. We worked out bugs with making moves, we made double pieces, and we made checks for the game being won/drawn.
 
 ##### Features we have implemented that don't work
 
-Currently, we have implemented a feature that notifies the users that the game has ended, however since we can't accept moves and make them this feature doesn't really work. We also have implemented a scanner that is trying to read in user input; the scanner works but the move parser method doesn't work at the moment.
+As far as we know, all features work. 
 
 ##### How to compile and run the program
 Navigate to the directory where the project is located and type 
@@ -40,7 +32,7 @@ If a player captures all of the opponent's pieces, that player wins, and the gam
 Additionally, our implementation assumes the standard jumping and tying rules, where jumps are mandatory and threefold repetitions or 50 moves without a capture lead to an automatic tie. 
 
 ### Starting a Game
-To start a game, open a terminal or command prompt, navigate to the directory of the project, and type "runCheckers.sh". This will automatically start a new game of checkers between two human players.
+To start a game, open a terminal or command prompt, navigate to the directory of the project, and type "./runCheckers.sh". This will automatically start a new game of checkers between two human players.
 
 ### Playing a Game
 After starting a game, the game board will be printed with the initial starting position. The first player will be prompted to enter coordinates for their first move. Coordinates are entered in the form<br><br>
@@ -52,11 +44,10 @@ Recall that jumping is mandatory. Since a sequence of several jumps could lead t
 To stop playing a game of checkers, type "quit" when it is either player's turn; this will immediately terminate the current game.<br><br>
 Otherwise, the game will automatically end when either one player wins, or when the game ends in a tie.
 
-### Features (in progress)
+### Features
 - Functional on any system supporting Java
 - Threefold repetition detection
-- 50 move rule detection
-- Rename each player
+- 40 move rule detection
 - Move inputs via coordinates
 - Prints game board after each move
 
