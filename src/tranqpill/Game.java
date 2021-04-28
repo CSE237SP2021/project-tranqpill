@@ -13,8 +13,8 @@ public class Game {
 	// instance variables
 	protected int blackPieces;
 	protected int whitePieces;
-	protected boolean blackToPlay;
-	protected int movesWithoutCapture;
+	public boolean blackToPlay;
+	public int movesWithoutCapture;
 	private Board board;
     private Map<Board, Integer> pastPositions;
 	
@@ -24,10 +24,6 @@ public class Game {
 		this.movesWithoutCapture = 0;
 		this.board = new Board();
 		this.board.readyPlayers();
-//		Piece white = new WhiteDouble();
-//		Piece black = new BlackDouble();
-//		this.board.getBoard()[1][4].setPiece(black);
-//		this.board.getBoard()[3][4].setPiece(white);
 		this.blackPieces = STARTING_NUMBER_OF_PIECES;
 		this.whitePieces = STARTING_NUMBER_OF_PIECES;
         this.pastPositions = new HashMap<Board, Integer>();
@@ -45,21 +41,8 @@ public class Game {
 		}
 
         for (Board b : pastPositions.keySet()) {
-        	System.out.println("freq "+b+", "+pastPositions.get(b));
         	if (pastPositions.get(b) >= 3) {
         		return true;
-        	//	System.out.println("Claim a draw?");
-        		/*Scanner sc = new Scanner(System.in);
-        		String s = sc.nextLine();
-        		sc.close();
-        		if (s.equals("yes")) {
-        			if (this.blackToPlay) {
-        				System.out.println("The black player claimed a draw. The game is a tie!");
-        			} else {
-        				System.out.println("The white player claimed a draw. The game is a tie!");
-        			}
-        			return true;
-        		} */
         	}
         }
 		return false;
@@ -95,19 +78,6 @@ public class Game {
 		System.out.println("num black pieces "+numBlackPieces);
 		return false;
 		
-		/*
-		System.out.println("white pieces: " + this.whitePieces);
-		System.out.println("black pieces: " + this.blackPieces);
-		if (this.whitePieces <= 0) {
-				System.out.println("White has no pieces remaining. Black wins!");
-				return true;
-			}
-		if (this.blackPieces <= 0) {
-			System.out.println("Black has no pieces remaining. White wins!");
-			return true;				
-		}
-		return false;
-		*/
 	}
 
 	/**
@@ -146,8 +116,6 @@ public class Game {
 		Scanner sc = new Scanner(System.in);
 		
 		String input = sc.nextLine();
-		
-		//sc.close();
 		
 		if(input.equals("off")) {
 			board.setCMarks(false);
@@ -259,9 +227,7 @@ public class Game {
 		}  else {
 			++movesWithoutCapture;
 		}
-		System.out.println("incrementing position");
 		this.pastPositions.put(this.board, pastPositions.getOrDefault(this.board, 0) + 1);	
-		//System.out.println("Past positions size "+pastPositions.size());
 		
 		updatedBoard.setCMarks(board.getCMarks());
 		for(int i=0; i< updatedBoard.getBoard()[0].length;i++) {

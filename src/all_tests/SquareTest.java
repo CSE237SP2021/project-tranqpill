@@ -10,7 +10,6 @@ class SquareTest {
 		Game g = new Game();
 		g.getBoard().readyPlayers();
 		
-		
 		Square sq = g.getBoard().getSquare(1, 0);
 		
 		assertEquals(1, sq.getLocation().x);
