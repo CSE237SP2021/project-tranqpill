@@ -44,6 +44,10 @@ public class Board {
 		}
 	}
 	
+	public Square[][] getBoard() {
+		return this.board;
+	}
+	
 	public Square getSquare(int x, int y) {
 		return this.board[x][y];
 	}
@@ -75,23 +79,48 @@ public class Board {
 		this.coordinateMarkers=cMarks;
 	}
 	
-	public Square[][] getBoard() {
-		return board;
-	}
-	
 	public Board clone() {
 		Square[][] result = new Square[board.length][board[0].length];
-		for(int i = 0; i< board.length; i++)
-			for(int j =0; j<board[i].length;j++)
-				result[i][j]=board[i][j].clone();
+		for(int i = 0; i < board.length; i++)
+			for(int j =0; j <board[i].length; j++)
+				result[i][j] = board[i][j].clone();
 		return new Board(result);
+	}
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Board))
+			return false;
+		Board b = (Board) o;
+		for (int i = 0; i < ROWS; ++i) {
+			for (int j = 0; j < COLUMNS; ++j) {
+				if (!b.getBoard()[i][j].equals(this.getBoard()[i][j])) return false;
+			}
+		}
+		return true;
+	}
+	@Override
+	public int hashCode() {
+		int result=0;
+		for(int i =0; i < this.board.length;i++) {
+			for(int j =0; j< this.board[i].length;j++) {
+				int stack =0;
+				if(board[i][j].getPiece()!= null && !board[i][j].getPiece().isDouble()) 
+					stack=1;
+				else if(board[i][j].getPiece()!= null && board[i][j].getPiece().isDouble()) 
+					stack=2;
+				
+				
+				result+=(8*i+j+1)*stack;
+			}
+		}
+		return result;
 	}
 	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		int markerNum=1;
-		for (Square[]row: board) {
+		int markerNum = 1;
+		for (Square[]row : board) {
 			if (coordinateMarkers)
 				sb.append(markerNum++ + " ");
 			for (Square sq : row) {

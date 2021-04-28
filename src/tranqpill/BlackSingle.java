@@ -1,9 +1,6 @@
 package tranqpill;
 
 public class BlackSingle implements Piece{
-	
-
-
 	public boolean isBlack() {
 		return true;
 	}

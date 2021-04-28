@@ -7,15 +7,16 @@ import java.util.*;
 public class Game {
 	
 	// constants
-	protected final int DRAW_MOVE_RULE = 50;
+	protected final int DRAW_MOVE_RULE = 40;
 	protected final int STARTING_NUMBER_OF_PIECES = 12;
 	
 	// instance variables
-	private int blackPieces;
-	private int whitePieces;
-	private boolean blackToPlay;
-	private int movesWithoutCapture;
+	protected int blackPieces;
+	protected int whitePieces;
+	public boolean blackToPlay;
+	public int movesWithoutCapture;
 	private Board board;
+    private Map<Board, Integer> pastPositions;
 	
 	// constructor
 	public Game() {
@@ -25,6 +26,7 @@ public class Game {
 		this.board.readyPlayers();
 		this.blackPieces = STARTING_NUMBER_OF_PIECES;
 		this.whitePieces = STARTING_NUMBER_OF_PIECES;
+        this.pastPositions = new HashMap<Board, Integer>();
 	}
 	
 	/** 
@@ -33,7 +35,49 @@ public class Game {
 	 */
 	// TODO
 	public boolean threefoldRepetition() {
+		
+		if (pastPositions.size()==0) {
+			System.out.println("no positions recorded");
+		}
+
+        for (Board b : pastPositions.keySet()) {
+        	if (pastPositions.get(b) >= 3) {
+        		return true;
+        	}
+        }
 		return false;
+	}
+	
+	/**
+	 * Checks to see if either player has won the game and prints a message accordingly
+	 * @return true if a player has won, false otherwise
+	 */
+	public boolean win() {
+		int numWhitePieces = 0;
+		int numBlackPieces = 0;
+		for (Square[] row : this.getBoard().getBoard())
+			for(Square sq :row) {
+				if (sq.getPiece()!=null)
+				{
+					
+					if(sq.getPiece().isBlack())
+						numBlackPieces++;
+					else
+						numWhitePieces++;
+				}
+			}
+		if(numWhitePieces==0) {
+			System.out.println("White wins!");
+			return true;
+		}
+		if(numBlackPieces==0) {
+			System.out.println("Black wins!");
+			return true;
+		}
+		System.out.println("num white pieces "+numWhitePieces);
+		System.out.println("num black pieces "+numBlackPieces);
+		return false;
+		
 	}
 
 	/**
@@ -42,13 +86,15 @@ public class Game {
 	 */
 	public boolean isDraw() {
 		
+		System.out.println(this.movesWithoutCapture);
+		
 		if (threefoldRepetition()) {
 			System.out.println("The same position has occurred 3 times, so the game is a tie.");
 			return true;
 		}
 		
 		if (this.movesWithoutCapture >= DRAW_MOVE_RULE) {
-			System.out.println("50 moves have occurred without any captures, so the game is a draw.");
+			System.out.println("40 moves have occurred without any captures, so the game is a draw.");
 			return true;
 		}
 		
@@ -71,12 +117,11 @@ public class Game {
 		
 		String input = sc.nextLine();
 		
-		sc.close();
-		
 		if(input.equals("off")) {
 			board.setCMarks(false);
 			return null;
 		}
+		
 		if(input.equals("on")) {
 			board.setCMarks(true);
 			return null;
@@ -110,6 +155,7 @@ public class Game {
 	 */
 	
 	public boolean isLegal(Move m) {
+		
 		if (m.getLocations().length<2) {
 			return false;
 		}
@@ -117,6 +163,7 @@ public class Game {
 		if(m.getLocations()[0].getPiece()==null||(m.getLocations()[0].getPiece().isBlack()!=this.blackToPlay)) {
 			return false;
 		}
+		
 		Point prevPoint = m.getLocations()[0].getLocation();
 		Board updatedBoard = board.clone();
 		int nJumps=0;
@@ -136,38 +183,65 @@ public class Game {
 				//move was made, update board position by removing/setting piece 
 				updatedBoard.getBoard()[currPoint.x][currPoint.y].setPiece(updatedBoard.getBoard()[prevPoint.x][prevPoint.y].getPiece());
 				updatedBoard.getBoard()[prevPoint.x][prevPoint.y].setPiece(null);
-				
 			}
 			
 			// checking for legality of a jump (e.g. tries to make a capture)
 			else if(Math.abs(prevPoint.x-currPoint.x)==2 && Math.abs(prevPoint.y-currPoint.y)==2) {
-				if((this.blackToPlay?1:-1)*currPoint.x>(this.blackToPlay?1:-1)*prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
+				
+				if ((this.blackToPlay?1:-1)*currPoint.x>(this.blackToPlay?1:-1)*prevPoint.x&& !m.getLocations()[0].getPiece().isDouble()) {
 					return false; 
 				}
+				
 				if(! (updatedBoard.getBoard()[currPoint.x][currPoint.y].getPiece()==null)) {
 					return false;
 				}
+				
 				if(updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].getPiece()==null) {
 					return false;
 				}
+				
 				if(updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].getPiece().isBlack()==this.blackToPlay) {
 					return false;
 				}
+				
 				updatedBoard.getBoard()[(prevPoint.x+currPoint.x)/2][(prevPoint.y+currPoint.y)/2].setPiece(null);
 				updatedBoard.getBoard()[currPoint.x][currPoint.y].setPiece(updatedBoard.getBoard()[prevPoint.x][prevPoint.y].getPiece());
 				updatedBoard.getBoard()[prevPoint.x][prevPoint.y].setPiece(null);
 				nJumps++;
-			}
+			} 
+			
 			else {
 				return false;
 			}
+			
 			prevPoint=currPoint;
 		}
 		
-		// don't allow a piece to move twice with less than two jumps 
-		if(m.getLocations().length>2 && nJumps<m.getLocations().length-1)
+		if(m.getLocations().length>2&&nJumps<m.getLocations().length-1)
 			return false;
+		
+		// if capture occurred, reset pastPositions
+		if (nJumps > 0) {
+			this.pastPositions.clear();
+			this.movesWithoutCapture = 0;
+		}  else {
+			++movesWithoutCapture;
+		}
+		this.pastPositions.put(this.board, pastPositions.getOrDefault(this.board, 0) + 1);	
+		
 		updatedBoard.setCMarks(board.getCMarks());
+		for(int i=0; i< updatedBoard.getBoard()[0].length;i++) {
+			Square s = updatedBoard.getBoard()[0][i];
+			if(s.getPiece()!=null && s.getPiece().isBlack()) {
+				s.setPiece(new BlackDouble());
+			}
+		}
+		for(int i=0; i< updatedBoard.getBoard()[7].length;i++) {
+			Square s = updatedBoard.getBoard()[7][i];
+			if(s.getPiece()!=null && !s.getPiece().isBlack()) {
+				s.setPiece(new WhiteDouble());
+			}
+		}
 		board = updatedBoard;
 		return true;
 	}
@@ -178,7 +252,7 @@ public class Game {
 	 * @return true if the input is of correct form, false if not
 	 */
 	
-	boolean correctForm(String user_input) {
+	 public boolean correctForm(String user_input) {
 		
 		Set<Character> good_letters = new HashSet<Character>();
 		good_letters.add('a');
@@ -225,7 +299,6 @@ public class Game {
 	}
 	
 
-	
 	/**
 	 * Starts a new checkers game
 	 */
@@ -235,31 +308,27 @@ public class Game {
 		while (!gameOver) {
 			
 			Move move = null;
+			
 			// prompt player for a valid move
 			while (move == null) {
 				board.print();
 				move = prompt();
 				if(move==null) {
-					System.out.println("Invalid move, please re-enter");
+					System.out.println("Enter a valid move");
 				}
-			}
-			
-			// update board with move
-			updateBoard(move);
+			}		
 			
 			// check if the game is a draw or is over
-			if (isDraw()) {
+			if (isDraw() || win()) {
 				gameOver = true;
 			} else if (this.blackToPlay) {
 				if (this.whitePieces <= 0) {
 					System.out.println("White has no pieces remaining. Black wins!");
 					gameOver = true;
 				}
-			} else {
-				if (this.blackPieces <= 0) {
-					System.out.println("Black has no pieces remaining. White wins!");
-					gameOver = true;				
-				}
+			} else if (this.blackPieces <= 0) {
+				System.out.println("Black has no pieces remaining. White wins!");
+				gameOver = true;				
 			}
 				
 			// game is not over, so it's the other player's turn
@@ -275,21 +344,11 @@ public class Game {
 		return this.board;
 	}
 	
-	/**
-	 * This method updates the current game position based off of the move provided 
-	 * by the player
-	 * @param move Move to be made by player
-	 */
-	public void updateBoard(Move move) {
-		if (move != null) {
-			//int captures = move.getCaptures();
-			
-			// if no capture, increment movesWithoutCapture
-			//this.movesWithoutCapture = captures > 0 ? 0 : this.movesWithoutCapture+1;
-
-			// move a piece from start square to end square
-			//board.movePiece(move.getStartPoint(), move.getEndPoint());	
-		}
+	public void setBlackToPlay(boolean b) {
+		this.blackToPlay=b;
 	}
-	
+
+	public void setBoard(Board b) {
+		this.board=b;
+	}
 }
