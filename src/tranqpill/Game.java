@@ -381,6 +381,7 @@ public class Game {
 	
 	public void setBlackToPlay(boolean b) {
 		this.blackToPlay=b;
+	}
 
 	public void setBoard(Board b) {
 		this.board=b;
