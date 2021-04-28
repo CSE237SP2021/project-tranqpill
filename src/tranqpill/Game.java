@@ -307,7 +307,6 @@ public class Game {
 		boolean gameOver = false;
 		while (!gameOver) {
 			
-			board.print();
 			Move move = null;
 			
 			// prompt player for a valid move
